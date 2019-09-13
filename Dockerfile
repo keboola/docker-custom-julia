@@ -12,12 +12,13 @@ RUN apt-get update && apt-get -yq dist-upgrade \
  && rm -rf /var/lib/apt/lists/*
 
 # set locale
-RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-    locale-gen
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+    && locale-gen
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 
 # install packages "globally"
 ENV JULIA_DEPOT_PATH /opt/julia-packages/
-RUN julia -e 'using Pkg; Pkg.add("CSV");' 
+COPY install.jl /tmp/install.jl
+RUN julia /tmp/install.jl
