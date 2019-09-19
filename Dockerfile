@@ -8,6 +8,10 @@ RUN apt-get update && apt-get -yq dist-upgrade \
  && apt-get install -yq --no-install-recommends \
     ca-certificates \
     locales \
+    python3 \
+    python3-dev \
+    python3-pip \
+    python3-setuptools \    
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
