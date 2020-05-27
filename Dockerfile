@@ -16,7 +16,7 @@ RUN apt-get update && apt-get -yq dist-upgrade \
  && rm -rf /var/lib/apt/lists/*
 
 # always use latest pip
-RUN /usr/local/bin/python -m pip install --upgrade pip
+RUN python3 -m pip install --upgrade pip
 
 # set locale
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
