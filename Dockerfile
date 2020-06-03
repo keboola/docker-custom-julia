@@ -11,9 +11,12 @@ RUN apt-get update && apt-get -yq dist-upgrade \
     python3 \
     python3-dev \
     python3-pip \
-    python3-setuptools \    
+    python3-setuptools \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
+
+# always use latest pip
+RUN python3 -m pip install --upgrade pip
 
 # set locale
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
