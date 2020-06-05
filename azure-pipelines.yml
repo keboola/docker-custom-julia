@@ -1,6 +1,13 @@
 pool:
   vmImage: ubuntu-latest
 
+variables:
+- name: juliaImageTag
+  value: latest 
+
+trigger:
+  - refs/tags/*
+
 steps:
   - script: docker info
     displayName: 'Info'
@@ -9,10 +16,20 @@ steps:
     displayName: 'Build'
 
   - script: |
+      imageTag = ${$(Build.SourceBranch):10} 
+      echo '##vso[task.setvariable variable=juliaImageTag]$(imageTag'
+      echo imageTag
+    displayName: 'What is the tag'
+    
+  - script: |
       docker login -u="$(QUAY_USERNAME)" -p="$(QUAY_PASSWORD)" quay.io
       docker tag $(KBC_APP_REPOSITORY) quay.io/$(KBC_APP_REPOSITORY):$(Build.SourceVersion)
       docker tag $(KBC_APP_REPOSITORY) quay.io/$(KBC_APP_REPOSITORY):latest
       docker images
       docker push quay.io/$(KBC_APP_REPOSITORY):$(Build.SourceVersion)
       docker push quay.io/$(KBC_APP_REPOSITORY):latest
-    displayName: 'Push to quay.io'
+    displayName: 'Push latest to quay.io'
+
+  - script: |
+      docker login -u="$(QUAY_USERNAME)" -p="$(QUAY_PASSWORD)" quay.io
+
