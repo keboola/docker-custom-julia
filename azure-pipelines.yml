@@ -6,6 +6,10 @@ variables:
   value: ${{ replace(variables['Build.SourceBranch'],'refs/tags/','') }}
 - name: isTagBuild
   value: ${{ startsWith(variables['Build.SourceBranch'],'refs/tags/') }}
+- name: dockerRegistryServiceConnection
+  value: '85ab7e7c-62ce-49e0-b201-bf56e6f3949e'
+- name: imageRepository
+  value: 'docker-custom-julia'
 
 trigger:
   - refs/tags/*
@@ -13,6 +17,15 @@ trigger:
 steps:
 - script: docker info
   displayName: 'Info'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'keboola-4338'
+    repository: 'docker-custom-julia'
+    command: 'build'
+    Dockerfile: '**/Dockerfile'
+    tags: |
+      $(imageTag)
 
 - script: docker build --tag keboola/docker-custom-julia .
   displayName: 'Build'
@@ -33,4 +46,6 @@ steps:
     repository: 'docker-custom-julia'
     command: 'push'
     tags: '$(imageTag)'
+  condition: eq(variables['isTagBuild'], 'true')
   displayName: 'Push latest to ACR'
+  
