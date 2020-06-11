@@ -25,15 +25,18 @@ steps:
     command: 'build'
     Dockerfile: '**/Dockerfile'
     tags: |
+      latest
       $(imageTag)
 
-- script: docker build --tag keboola/docker-custom-julia .
-  displayName: 'Build'
+
+- script: echo '##vso[task.setvariable variable=imageTag]$(Build.BuildId)'
+  displayName: "Set the imageTag to buildId if it's not a tag build"
+  condition: eq(variables['isTagBuild'], 'false')
 
 - script: |
     docker login -u="$(QUAY_USERNAME)" -p="$(QUAY_PASSWORD)" quay.io
-    docker tag $(KBC_APP_REPOSITORY) quay.io/$(KBC_APP_REPOSITORY):$(imageTag)
-    docker tag $(KBC_APP_REPOSITORY) quay.io/$(KBC_APP_REPOSITORY):latest
+    docker tag keboola.azurecr.io/docker-custom-julia quay.io/$(KBC_APP_REPOSITORY):$(imageTag)
+    docker tag keboola.azurecr.io/docker-custom-julia quay.io/$(KBC_APP_REPOSITORY):latest
     docker images
     docker push quay.io/$(KBC_APP_REPOSITORY):$(imageTag)
     docker push quay.io/$(KBC_APP_REPOSITORY):latest
