@@ -1,4 +1,4 @@
-FROM julia:1.4.0
+FROM julia:1.5.0
 
 WORKDIR /home
 
