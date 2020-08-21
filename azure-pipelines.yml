@@ -41,7 +41,7 @@ steps:
     docker push quay.io/$(KBC_APP_REPOSITORY):latest
   condition: eq(variables['isTagBuild'], 'true')
   displayName: 'Push latest to quay.io'
-   
+
 - task: Docker@2
   inputs:
     containerRegistry: 'keboola-4338'
@@ -50,4 +50,3 @@ steps:
     tags: '$(imageTag)'
   condition: eq(variables['isTagBuild'], 'true')
   displayName: 'Push latest to ACR'
-  
