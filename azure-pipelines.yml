@@ -22,16 +22,6 @@ steps:
   displayName: "Set the imageTag to buildId if it's not a tag build"
   condition: eq(variables['isTagBuild'], 'false')
 
-- task: Docker@2
-  inputs:
-    containerRegistry: 'keboola-4338'
-    repository: 'docker-custom-julia'
-    command: 'build'
-    Dockerfile: '**/Dockerfile'
-    tags: |
-      latest
-      $(imageTag)
-
 - script: |
     docker login -u="$(QUAY_USERNAME)" -p="$(QUAY_PASSWORD)" quay.io
     docker tag keboola.azurecr.io/docker-custom-julia quay.io/$(KBC_APP_REPOSITORY):$(imageTag)
